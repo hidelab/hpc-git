@@ -1,33 +1,56 @@
 # a git remote on sharc
 
+These instructions explain how to use `sharc` as a remote for git.
+
+They assume you can already SSH into `sharc` without using a
+username or password.
+I've written instructions for doing that in [ssh.md](ssh.md).
+
+If you haven't followed those fine instructions
+and you still need your username to login to `sharc`,
+then that's okay,
+you can still use these instructions,
+but the remote location will be `USERNAME@sharc:REPO-NAME`
+instead of `sharc:REPO-NAME`.
+And you'll have to type your password for every `push` or `fetch`.
+
 
 ## For every repo that you want on sharc
 
-
 Login to `sharc` and: `git init --bare REPO-NAME`
 
+## You have an existing repo on your laptop?
 
-on your laptop: `git add remote ice md1xdrj@iceberg.sheffield.ac.uk:repo-name`
+on your laptop:
 
-Now you can push: `git push ice HEAD`
-]]
+    git remote add sharc sharc:REPO-NAME
 
-or clone
+Now you can push:
+
+    git push sharc HEAD
+
+## You are creating a fresh repo on your laptop?
+
+You can clone from the (currently blank) repo on `sharc`:
 
 ```
-git clone ssh://md1xdrj@iceberg/~/solr1
+git clone sharc:REPO-NAME
 ```
 
-(this results in the respo on iceberg being the `origin` remote)
+This results in the repo on `sharc` being the `origin` remote.
+Use `git remote -v` to list your remotes.
 
-If we're going to have two remotes (one on iceberg, one on
-github) we might need to rename a remote:
+You can add and commit using the usual git workflow,
+then push to `sharc`:
+
+    git push origin HEAD
+
+If we're going to have two remotes
+(one on `sharc`, one on github) we might need to rename a remote:
 
 (refer to https://help.github.com/articles/renaming-a-remote/)
 
 
-```
-git remote rename origin iceberg
-```
+    git remote rename origin sharc
 
 
