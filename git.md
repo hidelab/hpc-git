@@ -2,8 +2,8 @@
 
 These instructions explain how to use `sharc` as a remote for git.
 
-They assume you can already SSH into `sharc` without using a
-username or password.
+They assume you can already SSH into `sharc`
+without using a username or password.
 I've written instructions for doing that in [ssh.md](ssh.md).
 
 If you haven't followed those fine instructions

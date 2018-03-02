@@ -4,7 +4,7 @@ or
 
 ## How to avoid typing in your sharc password all the time
 
-git uses SSH (secure shell, used as both a noun and a verb)
+`git` uses SSH (secure shell, used as both a noun and a verb)
 to access the remote host;
 it's better if we set it up so that you don't have to type your
 password in all the time.
@@ -42,9 +42,7 @@ Let's generate one!
 
 Run this command in a terminal.
 
-```
-ssh-keygen
-```
+    ssh-keygen
 
 The key pair is stored in two files,
 and you are prompted for a location for the private key file.
@@ -73,7 +71,7 @@ The public part, `~/.ssh/id_rsa.pub`,
 needs to be put on `sharc`.
 This is surprisingly tricky.
 
-You need to ssh into `iceberg` to create a `.ssh` directory,
+You need to ssh into `sharc` to create a `.ssh` directory,
 and copy your `id_rsa.pub` file to `.ssh/authorized_keys`.
 
 There are various ways to do this,
