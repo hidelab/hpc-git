@@ -1,19 +1,25 @@
-# Setting up sharc for passwordless logins
+# Setting up ShARC for passwordless logins
 
 or
 
-## How to avoid typing in your sharc password all the time
+## How to avoid typing in your ShARC password all the time
 
 `git` uses SSH (secure shell, used as both a noun and a verb)
 to access the remote host;
 it's better if we set it up so that you don't have to type your
 password in all the time.
 
-If you can already SSH into `sharc` without needing a password,
+If you can already SSH into `sharc` without needing a password every time,
 then you already have this set up.
 You can skip to ∎.
 
-If you're not sure, try `ssh sharc.sheffield.ac.uk`.
+If you're not sure, try `ssh USERNAME@sharc.sheffield.ac.uk`.
+You'll need to replace `USERNAME` with your `sharc` username.
+Mine is `md1xdrj`, yours will follow a similar pattern
+(department, number, maybe some initials);
+it will certainly be nothing to do with your email address,
+and won't be found on your Ucard.
+
 If you log in without needing your password then you can
 skip to ∎.
 
@@ -48,12 +54,21 @@ The key pair is stored in two files,
 and you are prompted for a location for the private key file.
 The default is fine so accept that (it's `~/.ssh/id_rsa`).
 
+Enter a new 'passphrase' (password) when prompted.
+This shouldn't be a password you use for any other service.
+
 The key pair consists of a pair of files:
 A _private_ key and a _public_ key.
 They are usually in the two files `~/.ssh/id_rsa` (private) and
 `~/.ssh/id_rsa.pub` (public).
 
 The private key should not be revealed to anyone.
+The passphrase we just entered is used to encrypt the private key file,
+which prevents malicious programs on our machine from being able to use it
+without that passphrase.
+
+But now we have another password to remember/manage!
+Don't worry, there's a way of ensuring you only rarely need to type it.
 
 The public key is, as its name suggests, public.
 It can and should be distributed to systems that you wish to use.
@@ -69,46 +84,39 @@ Now you have an SSH key pair
 
 The public part, `~/.ssh/id_rsa.pub`,
 needs to be put on `sharc`.
-This is surprisingly tricky.
 
-You need to ssh into `sharc` to create a `.ssh` directory,
-and copy your `id_rsa.pub` file to `.ssh/authorized_keys`.
+The following appends your public key to a file `.ssh/authorized_keys`
+in your home directory on ShARC:
 
-There are various ways to do this,
-I'm going to suggest the one-liner:
+    ssh-copy-id ~/.ssh/id_rsa.pub USERNAME@sharc.sheffield.ac.uk
 
-    cat ~/.ssh/id_rsa.pub |
-    ssh USERNAME@sharc.sheffield.ac.uk 'mkdir -p ~/.ssh ; cat >> ~/.ssh/authorized_keys'
-
-You'll need to replace `USERNAME` with your `sharc` username.
-Mine is `md1xdrj`, yours will follow a similar pattern
-(department, number, maybe some initials);
-it will certainly be nothing to do with your email address,
-and won't be found on your Ucard.
-
-You'll be prompted for your password.
+You'll be prompted for your password (_not_ the private key passphrase)
 
 You may be prompted to accept the fingerprint of
-`sharc.sheffield.ac.uk` after being told:
+`sharc.sheffield.ac.uk` after being told something like:
 
 ```
 The authenticity of host 'sharc.sheffield.ac.uk (143.167.3.47)' can't be established.
-ECDSA key fingerprint is 2c:d0:f5:f0:a9:fc:c4:3e:da:81:e7:de:6c:5a:f8:b7.
+ECDSA key fingerprint is SHA256:WJYHPbMKrWud4flwhIbrfTB1SR4pprGhx4Vu88LhP58.
 ```
-
-(because stuff, the IP address and the fingerprint might change)
 
 This is a really crucial step in
 ensuring the connection between you and `sharc` is secure.
 Without having some secure means of verifying the fingerprint,
 you will not be able to trust the security of the connection.
-In the interests of simplicitly, getting things done,
-and honouring stupid traditions,
-I'm telling you to accept the offered fingerprint.
+
+You should compare the _fingerprint_ value shown in your terminal
+with [those published here](https://docs.hpc.shef.ac.uk/en/latest/troubleshooting.html)
+and only proceed if you see a match.
 
 ∎ skip here if you can already `ssh sharc.sheffield.ac.uk`
 
-Try it now.
+Next, we're going to tell a program called `ssh-agent` to remember our passphrase
+so it can be decrypted when needed:
+
+    eval $(ssh-agent -s)
+    ssh-add ~/.ssh/id_rsa
+
 This time when you go
 
     ssh USERNAME@sharc.sheffield.ac.uk
@@ -117,6 +125,8 @@ you should be logged straight in,
 without having to type in your password.
 
 How cool is that?
+
+Note that you'll need to re-run the `eval` and `ssh-add` lines for each new terminal you open.
 
 ## Stretch goal: avoid explicit username
 
